@@ -1,0 +1,463 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InterviewCoachAI - Mock Interview Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #0f0f0f;
+      min-height: 100vh;
+      padding: 20px;
+      color: #e0e0e0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #0f0f0f;
+      border-radius: 12px;
+      padding: 40px;
+    }
+
+    h1 {
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .subtitle {
+      color: #999;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+
+    form {
+      display: grid;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #e0e0e0;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: vertical;
+      transition: border-color 0.3s;
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #E1306C;
+      box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.2);
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #E1306C;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      color: white;
+      width: 100%;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #c71f5e 0%, #6b2c8f 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(225, 48, 108, 0.3);
+    }
+
+    /* Make feedback and summary clearer */
+    .feedback-box { margin-top: 12px; display: none; }
+    .summary-box { background: #ffffff; border: 1px solid #e6e9ef; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    .badge { padding: 6px 8px; border-radius: 6px; font-weight: 600; }
+    .badge-success { background: #2dd4bf; color: #003033; }
+    .badge-warning { background: #f59e0b; color: #3b2205; }
+    .badge-danger { background: #ef4444; color: #fff; }
+
+    .reset-btn, .complete-btn {
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      color: white;
+    }
+
+    .reset-btn:hover, .complete-btn:hover {
+      background: linear-gradient(135deg, #c71f5e 0%, #6b2c8f 100%);
+    }
+
+    #questions {
+      display: none;
+      margin-top: 30px;
+    }
+
+    #questions h2 {
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .question-box {
+      background: #1a1a1a;
+      border-left: 4px solid #E1306C;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .question-number {
+      display: inline-block;
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+    }
+
+    .question-text {
+      margin-bottom: 15px;
+      line-height: 1.6;
+      color: #e0e0e0;
+    }
+
+    .answer-textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 1em;
+      resize: vertical;
+      margin-bottom: 10px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+
+    .answer-textarea:focus {
+      outline: none;
+      border-color: #E1306C;
+    }
+
+    .feedback-box {
+      display: none;
+      margin-top: 15px;
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .feedback-header {
+      margin-bottom: 15px;
+    }
+
+    .score-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .score-item {
+      flex: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9em;
+      margin-left: 8px;
+    }
+
+    .badge-success {
+      background: #E1306C;
+      color: white;
+    }
+
+    .badge-warning {
+      background: #FD1D1D;
+      color: white;
+    }
+
+    .badge-danger {
+      background: #833AB4;
+      color: white;
+    }
+
+    .badge-info {
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      color: white;
+    }
+
+    .star-badge {
+      margin-top: 10px;
+    }
+
+    .suggestions {
+      background: #252525;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      border-left: 4px solid #FD1D1D;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .suggestions h4 {
+      color: #FD1D1D;
+      margin-bottom: 8px;
+    }
+
+    .suggestions ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .suggestions li {
+      color: #b0b0b0;
+      margin-bottom: 6px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .suggestions li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #FD1D1D;
+      font-weight: bold;
+    }
+
+    .success-msg {
+      background: #252525;
+      color: #E1306C;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      border-left: 4px solid #E1306C;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .improved-answer {
+      background: #252525;
+      padding: 12px;
+      border-radius: 4px;
+      border-left: 3px solid #E1306C;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .improved-answer h4 {
+      color: #E1306C;
+      margin-bottom: 8px;
+    }
+
+    .improved-answer blockquote {
+      color: #b0b0b0;
+      font-style: italic;
+      padding-left: 12px;
+      line-height: 1.6;
+    }
+
+    .summary-box {
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 8px;
+      border: 2px solid #E1306C;
+      margin-top: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .summary-box h2 {
+      background: linear-gradient(135deg, #E1306C 0%, #833AB4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+    }
+
+    .summary-box p {
+      margin-bottom: 10px;
+      color: #b0b0b0;
+    }
+
+    .tips {
+      background: #252525;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+      border-left: 4px solid #E1306C;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .tips h3 {
+      color: #E1306C;
+      margin-bottom: 10px;
+    }
+
+    .tips ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .tips li {
+      color: #b0b0b0;
+      margin-bottom: 8px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .tips li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #E1306C;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .score-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 InterviewCoachAI</h1>
+    <p class="subtitle">AI-powered mock interviews with personalized feedback</p>
+
+    <form id="resume-form">
+      <div>
+        <label>Upload Your Resume (PDF or Text)</label>
+        <p style="color: #999; margin-bottom: 10px; font-size: 0.9em;">
+          Upload a PDF resume or paste plain text. We'll extract the details to generate interview questions.
+        </p>
+        
+        <!-- File Upload Option -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <input 
+            type="file" 
+            id="resume-file" 
+            accept=".pdf,.txt" 
+            style="display: none;"
+          />
+          <button 
+            type="button" 
+            id="upload-btn" 
+            class="submit-btn" 
+            style="flex: 1; width: auto; background: linear-gradient(135deg, #FD1D1D 0%, #E1306C 100%);"
+          >📄 Upload PDF or Text File</button>
+        </div>
+
+        <!-- Or Text Paste Option -->
+        <div style="text-align: center; color: #999; margin: 15px 0; font-size: 0.9em;">— Or paste below —</div>
+        
+        <label for="resume-text">Paste Your Resume (Plain Text)</label>
+        <textarea 
+          id="resume-text" 
+          rows="10" 
+          placeholder="John Doe
+Software Engineer at TechCorp
+Skills: Python, Go, Docker, AWS
+8+ years of experience..."
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="role">Target Role</label>
+          <select id="role">
+            <option value="SWE">Software Engineer</option>
+            <option value="Data">Data Science / ML</option>
+            <option value="Finance">Finance</option>
+            <option value="Product">Product Manager</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="exp">Experience Level</label>
+          <select id="exp">
+            <option value="">Auto-detect from resume</option>
+            <option value="junior">Junior (0-2 years)</option>
+            <option value="mid">Mid-level (3-7 years)</option>
+            <option value="senior">Senior (8+ years)</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Generate Interview Questions</button>
+    </form>
+
+    <div id="questions"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
