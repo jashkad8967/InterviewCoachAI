@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 import pdfplumber
+import io
+import re
 
 
 app = FastAPI(
@@ -16,7 +18,17 @@ app.add_middleware(
     CORSMiddleware,
     # For local development we allow common localhost origins. Change to
     # a more restrictive list in production.
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost", "http://127.0.0.1"],
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+        "http://[::1]",
+        "http://[::1]:3000",
+        "http://[::1]:8000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -139,7 +151,7 @@ class AnswerEvaluationResponse(BaseModel):
 # ENDPOINTS
 # ============================================================================
 
-@app.post("/upload-resume")
+@app.post("/upload-resume", response_model=ResumeAnalysisResponse)
 async def upload_resume(file: UploadFile = File(...)) -> ResumeAnalysisResponse:
     """Upload a PDF or text file and extract resume text, then analyze it."""
     if not file.filename:
@@ -151,7 +163,6 @@ async def upload_resume(file: UploadFile = File(...)) -> ResumeAnalysisResponse:
         
         # Handle PDF files
         if file.filename.lower().endswith(".pdf"):
-            import io
             with pdfplumber.open(io.BytesIO(content)) as pdf:
                 for page in pdf.pages:
                     page_text = page.extract_text()
@@ -207,7 +218,6 @@ async def analyze_resume(req: ResumeAnalysisRequest) -> ResumeAnalysisResponse:
     if any(kw in text_lower for kw in senior_keywords):
         experience_score += 3
     
-    import re
     years_match = re.search(r'(\d+)\+?\s*years?', text_lower)
     if years_match:
         years = int(years_match.group(1))
@@ -308,7 +318,6 @@ def evaluate_answer(req: AnswerEvaluationRequest) -> AnswerEvaluationResponse:
     elif word_count < 20:
         relevance -= 1.0
     
-    import re
     if re.search(r'\d+\%|\d+x|decreased|increased|improved', answer_lower):
         relevance += 1.5
     
