@@ -11,7 +11,7 @@ Start-Process -FilePath "powershell" -ArgumentList "-NoExit", "-Command", $backe
 Write-Host "Launched backend on http://localhost:8000" -ForegroundColor Green
 
 # Start frontend (new window)
-$frontendCmd = "cd '$rootDir\frontend'; python -m http.server 3000"
+$frontendCmd = "cd '$rootDir'; python -m http.server 3000"
 Start-Process -FilePath "powershell" -ArgumentList "-NoExit", "-Command", $frontendCmd
 Write-Host "Launched frontend on http://localhost:3000" -ForegroundColor Green
 
