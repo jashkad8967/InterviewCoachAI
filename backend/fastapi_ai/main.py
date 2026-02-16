@@ -16,9 +16,8 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    # For local development we allow common localhost origins. Change to
-    # a more restrictive list in production.
     allow_origins=[
+        # Local development
         "http://localhost",
         "http://localhost:3000",
         "http://localhost:8000",
@@ -28,6 +27,10 @@ app.add_middleware(
         "http://[::1]",
         "http://[::1]:3000",
         "http://[::1]:8000",
+        # GitHub Pages
+        "https://jashkad8967.github.io",
+        # Allow any HTTPS origin (for compatibility)
+        "https://*.github.io",
     ],
     allow_credentials=True,
     allow_methods=["*"],

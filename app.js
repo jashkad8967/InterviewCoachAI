@@ -2,9 +2,18 @@
 // FRONTEND CONFIG
 // ============================================================================
 
-const API_BASE = ['localhost', '127.0.0.1', '::1', ''].includes(window.location.hostname)
+// Override API_BASE by setting window.API_BASE_OVERRIDE before loading this script
+// or by adding ?api=https://your-backend-url to the URL query params
+const queryParams = new URLSearchParams(window.location.search);
+const queryApiBase = queryParams.get('api');
+
+const API_BASE = window.API_BASE_OVERRIDE 
+  ? window.API_BASE_OVERRIDE
+  : queryApiBase
+  ? queryApiBase
+  : ['localhost', '127.0.0.1', '::1', ''].includes(window.location.hostname)
   ? 'http://localhost:8000'
-  : `${window.location.protocol}//${window.location.host}/api`;
+  : 'https://interview-coach-ai-backend.onrender.com';
 
 console.log(`[InterviewCoach] Using API base: ${API_BASE}`);
 
